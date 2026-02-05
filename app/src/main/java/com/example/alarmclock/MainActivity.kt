@@ -108,6 +108,7 @@ class MainActivity : ComponentActivity() {
         )
 
         showStatusNotification(hours, minutes)
+        finish()
     }
 
     private fun showStatusNotification(hours: Int, minutes: Int) {
@@ -232,7 +233,7 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                 onSetAlarm(h % 24, m % 60)
             },
             modifier = Modifier
-                .width(260.dp)
+                .width(300.dp)
                 .height(70.dp)
                 .shadow(
                     elevation = 20.dp,
@@ -248,7 +249,7 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
             shape = RoundedCornerShape(24.dp)
         ) {
             Text(
-                "INITIALIZE ALARM",
+                "ARM SYSTEM",
                 style = TextStyle(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 22.sp,

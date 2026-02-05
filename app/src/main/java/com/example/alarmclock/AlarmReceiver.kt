@@ -31,7 +31,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun showTriggerNotification(context: Context) {
-        val channelId = "alarm_trigger_channel"
+        val channelId = "alarm_trigger_channel_v2"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Intent for the ringing activity
@@ -49,6 +49,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+                enableLights(true)
+                lightColor = android.graphics.Color.RED
+                enableVibration(true)
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -65,8 +68,5 @@ class AlarmReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(2, notification)
-        
-        // Also explicitly start the activity for extra insurance
-        context.startActivity(fullScreenIntent)
     }
 }
