@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -101,14 +103,15 @@ class MainActivity : ComponentActivity() {
         val diff = calendar.timeInMillis - System.currentTimeMillis()
         Log.i("CyberAlarm", "ALARM SET FOR: ${calendar.time} (in ${diff / 1000} seconds)")
         
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
+        val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis, pendingIntent)
+        alarmManager.setAlarmClock(info, pendingIntent)
 
         showStatusNotification(hours, minutes)
-        finish()
+        
+        // Give some time for visual feedback before finishing
+        Handler(Looper.getMainLooper()).postDelayed({
+            finish()
+        }, 500)
     }
 
     private fun showStatusNotification(hours: Int, minutes: Int) {

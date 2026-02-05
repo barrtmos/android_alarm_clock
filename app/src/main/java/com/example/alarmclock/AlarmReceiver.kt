@@ -31,12 +31,14 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun showTriggerNotification(context: Context) {
-        val channelId = "alarm_trigger_channel_v2"
+        val channelId = "alarm_trigger_channel_v3"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) ?: 
+                         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
         // Intent for the ringing activity
         val fullScreenIntent = Intent(context, AlarmRingingActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val fullScreenPendingIntent = PendingIntent.getActivity(
             context, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -49,9 +51,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
-                enableLights(true)
-                lightColor = android.graphics.Color.RED
+                setSound(alarmSound, android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build())
                 enableVibration(true)
+                description = "Critical Alarm Notifications"
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -63,8 +68,10 @@ class AlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setFullScreenIntent(fullScreenPendingIntent, true)
+            .setSound(alarmSound)
             .setAutoCancel(false)
             .setOngoing(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build()
 
         notificationManager.notify(2, notification)
