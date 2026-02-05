@@ -1,0 +1,44 @@
+# Gradle files
+.gradle/
+build/
+app/build/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# Android Studio files
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+output.json
+
+# Specialized files
+*.keystore
+!debug.keystore
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.swp
+
+# Kotlin
+.kotlin/
+
+# Optional: exclude APKs and other build artifacts
+*.apk
+*.ap_
+*.dex
