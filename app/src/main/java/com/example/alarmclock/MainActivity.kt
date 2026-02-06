@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -173,7 +174,18 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x7A003D45))
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.9f)),
+                        radius = 1000f // Large radius for subtle effect
+                    )
+                )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x3D003D45))
         )
 
         Column(
@@ -181,31 +193,41 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-        Text(
-            text = "SYSTEM CLOCK: $currentTime",
+            Spacer(modifier = Modifier.fillMaxHeight(0.33f))
+            
+            Text(
+                text = "SYSTEM CLOCK: $currentTime",
             style = TextStyle(
                 color = Color(0xFF00FF00),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        Text(
-            text = "CYBER ALARM",
-            style = TextStyle(
-                color = Color(0xFF00FF00),
-                fontSize = 42.sp,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .shadow(elevation = 15.dp, shape = RectangleShape, ambientColor = Color(0xFF00FF00), spotColor = Color(0xFF00FF00))
-        )
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(24.dp), spotColor = Color(0xFF00FF00))
+                    .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(24.dp))
+                    .border(3.dp, Color(0xFF00FF00).copy(alpha = 0.25f), RoundedCornerShape(24.dp))
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "CYBER ALARM",
+                    style = TextStyle(
+                        color = Color(0xFF00FF00),
+                        fontSize = 32.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    maxLines = 1,
+                    softWrap = false
+                )
+            }
 
         Text(
             text = "!!! USE 24-HOUR FORMAT !!!",
@@ -237,12 +259,12 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                     }
                 },
                 label = "HH",
-                modifier = Modifier.size(width = 80.dp, height = 90.dp)
+                modifier = Modifier.size(width = 70.dp, height = 80.dp)
             )
             Text(
                 ":",
                 color = Color(0xFF00FF00),
-                fontSize = 48.sp,
+                fontSize = 42.sp,
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold
             )
@@ -251,7 +273,7 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                 onValueChange = { if (it.length <= 2) minutes = it.filter { it.isDigit() } },
                 label = "MM",
                 modifier = Modifier
-                    .size(width = 80.dp, height = 90.dp)
+                    .size(width = 70.dp, height = 80.dp)
                     .focusRequester(minutesFocusRequester)
             )
         }
@@ -265,8 +287,8 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                 onSetAlarm(h % 24, m % 60)
             },
             modifier = Modifier
-                .width(300.dp)
-                .height(70.dp)
+                .width(280.dp)
+                .height(65.dp)
                 .shadow(
                     elevation = 20.dp,
                     shape = RoundedCornerShape(24.dp),

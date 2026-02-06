@@ -52,27 +52,22 @@ class AlarmService : Service() {
         
         startVibration()
 
-        val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-
         try {
             mediaPlayer?.release()
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(applicationContext, alarmUri)
+            mediaPlayer = MediaPlayer.create(this, R.raw.alarm_sound).apply {
                 setAudioAttributes(
                     android.media.AudioAttributes.Builder()
                         .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build()
                 )
                 isLooping = true
-                setOnCompletionListener { it.start() }
-                prepare()
+                setVolume(1.0f, 1.0f)
                 start()
             }
-            Log.d("CyberAlarm", "AlarmService: MediaPlayer started")
+            Log.d("CyberAlarm", "AlarmService: Custom melody started")
         } catch (e: Exception) {
-            Log.e("CyberAlarm", "AlarmService: Error starting MediaPlayer", e)
+            Log.e("CyberAlarm", "AlarmService: Error starting MediaPlayer with custom sound", e)
         }
 
         return START_STICKY
