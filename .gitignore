@@ -42,3 +42,4 @@ Thumbs.db
 *.apk
 *.ap_
 *.dex
+jadx_tool/

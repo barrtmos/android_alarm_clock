@@ -11,6 +11,7 @@ import android.util.Log
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -23,10 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationCompat
@@ -157,14 +162,27 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.bg_alarm),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x7A003D45))
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
         Text(
             text = "SYSTEM CLOCK: $currentTime",
             style = TextStyle(
@@ -200,6 +218,8 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
+        val minutesFocusRequester = remember { FocusRequester() }
+
         // Time Input Row (removed outer container)
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -208,7 +228,14 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
         ) {
             NeonInput(
                 value = hours,
-                onValueChange = { if (it.length <= 2) hours = it.filter { it.isDigit() } },
+                onValueChange = { 
+                    if (it.length <= 2) {
+                        hours = it.filter { it.isDigit() }
+                        if (hours.length == 2) {
+                            minutesFocusRequester.requestFocus()
+                        }
+                    }
+                },
                 label = "HH",
                 modifier = Modifier.size(width = 80.dp, height = 90.dp)
             )
@@ -223,7 +250,9 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                 value = minutes,
                 onValueChange = { if (it.length <= 2) minutes = it.filter { it.isDigit() } },
                 label = "MM",
-                modifier = Modifier.size(width = 80.dp, height = 90.dp)
+                modifier = Modifier
+                    .size(width = 80.dp, height = 90.dp)
+                    .focusRequester(minutesFocusRequester)
             )
         }
 
@@ -244,7 +273,7 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                     spotColor = Color(0xFF00FF00),
                     ambientColor = Color(0xFF00FF00)
                 )
-                .border(2.dp, Color(0xFF00FF00), RoundedCornerShape(24.dp)),
+                .border(3.dp, Color(0xFF00FF00).copy(alpha = 0.25f), RoundedCornerShape(24.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color(0xFF00FF00)
@@ -259,6 +288,7 @@ fun CyberpunkScreen(onSetAlarm: (Int, Int) -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
             )
+        }
         }
     }
 }
